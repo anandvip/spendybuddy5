@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpendyBuddy</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #45a049;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --border-color: #ddd;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 15px;
+        }
+
+        button, input[type="submit"] {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover, input[type="submit"]:hover {
+            background-color: var(--secondary-color);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: var(--background-color);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        #theme-switcher, #report-options {
+            margin-bottom: 20px;
+        }
+
+        #report-options label {
+            margin-right: 10px;
+        }
+
+        #debug-log {
+            background-color: #f8f8f8;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            margin-top: 20px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 20px;
+        }
+
+        .tag button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 5px;
+        }
+
+        /* Theme-specific styles */
+        body.ocean-theme {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --background-color: #ecf0f1;
+            --text-color: #2c3e50;
+            --border-color: #bdc3c7;
+        }
+
+        body.forest-theme {
+            --primary-color: #27ae60;
+            --secondary-color: #2ecc71;
+            --background-color: #f1f8e9;
+            --text-color: #1b5e20;
+            --border-color: #a5d6a7;
+        }
+
+        body.sunset-theme {
+            --primary-color: #e74c3c;
+            --secondary-color: #c0392b;
+            --background-color: #ffeaa7;
+            --text-color: #d35400;
+            --border-color: #f39c12;
+        }
+
+        body.monochrome-theme {
+            --primary-color: #333;
+            --secondary-color: #666;
+            --background-color: #f5f5f5;
+            --text-color: #000;
+            --border-color: #ddd;
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr {
+                margin-bottom: 15px;
+            }
+
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+            }
+
+            td:before {
+                position: absolute;
+                top: 6px;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                content: attr(data-label);
+                font-weight: bold;
+            }
+        }
+      :root {
+    --primary-color: #4CAF50;
+    --secondary-color: #45a049;
+    --background-color: #f4f4f4;
+    --text-color: #333;
+    --border-color: #ddd;
+}
+
+/* Light theme (default) */
+body.light-theme {
+    --primary-color: #4CAF50;
+    --secondary-color: #45a049;
+    --background-color: #f4f4f4;
+    --text-color: #333;
+    --border-color: #ddd;
+}
+
+/* Dark theme */
+body.dark-theme {
+    --primary-color: #2196F3;
+    --secondary-color: #1976D2;
+    --background-color: #333;
+    --text-color: #f4f4f4;
+    --border-color: #555;
+}
+
+/* Ocean theme */
+body.ocean-theme {
+    --primary-color: #3498db;
+    --secondary-color: #2980b9;
+    --background-color: #ecf0f1;
+    --text-color: #2c3e50;
+    --border-color: #bdc3c7;
+}
+
+/* Forest theme */
+body.forest-theme {
+    --primary-color: #27ae60;
+    --secondary-color: #2ecc71;
+    --background-color: #f1f8e9;
+    --text-color: #1b5e20;
+    --border-color: #a5d6a7;
+}
+
+/* Sunset theme */
+body.sunset-theme {
+    --primary-color: #e74c3c;
+    --secondary-color: #c0392b;
+    --background-color: #ffeaa7;
+    --text-color: #d35400;
+    --border-color: #f39c12;
+}
+
+/* Monochrome theme */
+body.monochrome-theme {
+    --primary-color: #333;
+    --secondary-color: #666;
+    --background-color: #f5f5f5;
+    --text-color: #000;
+    --border-color: #ddd;
+}
+
+/* Apply these styles to your existing CSS */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+button, input[type="submit"] {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Add more CSS rules as needed to apply the theme colors to other elements */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="./logo/SpendyBuddy.png" alt="SpendyBuddy Logo">
+            <h1>SpendyBuddy</h1>
+        </header>
+
+        <div id="theme-switcher">
+            <label for="theme-select">Choose Theme:</label>
+            <select id="theme-select">
+                <option value="default">Default</option>
+                <option value="ocean">Ocean</option>
+                <option value="forest">Forest</option>
+                <option value="sunset">Sunset</option>
+                <option value="monochrome">Monochrome</option>
+            </select>
+        </div>
+
+        <button id="open-settings">Settings</button>
+
+        <form id="expense-form">
+            <select id="family-member" required>
+                <option value="">Select Family Member</option>
+            </select>
+            <input type="text" id="expense-name" placeholder="Expense Name" required>
+            <input type="number" id="expense-amount" placeholder="Amount" step="0.01" required>
+            <input type="date" id="expense-date" required>
+            <select id="expense-category" required>
+                <option value="">Select Category</option>
+            </select>
+            <button type="submit">Add Expense</button>
+        </form>
+
+        <div id="expense-list">
+            <h2>Expense List</h2>
+            <table id="expense-table">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable('familyMember')">Family Member</th>
+                        <th onclick="sortTable('name')">Expense</th>
+                        <th>Amount (₹)</th>
+                        <th>Date</th>
+                        <th onclick="sortTable('category')">Category</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="today-expenses">
+            <h2>Today's Expenses</h2>
+            <table id="today-expense-table">
+                <thead>
+                    <tr>
+                        <th>Family Member</th>
+                        <th>Expense</th>
+                        <th>Amount (₹)</th>
+                        <th>Category</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <h3>Today's Total: <span id="today-total">₹0.00</span></h3>
+        </div>
+
+        <div id="report-section">
+            <h2>Expense Report</h2>
+            <div id="report-options">
+                <label><input type="radio" name="report-type" value="daily" checked> Daily</label>
+                <label><input type="radio" name="report-type" value="weekly"> Weekly</label>
+                <label><input type="radio" name="report-type" value="monthly"> Monthly</label>
+                <label><input type="radio" name="report-type" value="quarterly"> Quarterly</label>
+                <label><input type="radio" name="report-type" value="half-yearly"> Half Yearly</label>
+                <label><input type="radio" name="report-type" value="annual"> Annual</label>
+            </div>
+            <div id="report-date-range">
+                <input type="date" id="report-start-date">
+                <input type="date" id="report-end-date">
+            </div>
+            <button id="generate-report">Generate Report</button>
+            <div id="report-result"></div>
+            <button id="copyReportBtn" style="display:none;">Copy Report to Clipboard</button>
+        </div>
+
+        <div id="settings-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Settings</h2>
+                <div id="settings-content">
+                    <div>
+                        <h3>Categories</h3>
+                        <div id="category-list"></div>
+                        <input type="text" id="new-category" placeholder="New Category">
+                        <button id="add-category">Add Category</button>
+                    </div>
+                    <div>
+                        <h3>Family Members</h3>
+                        <div id="member-list"></div>
+                        <input type="text" id="new-member" placeholder="New Member">
+                        <button id="add-member">Add Member</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="edit-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Edit Expense</h2>
+                <form id="edit-expense-form">
+                    <input type="hidden" id="edit-expense-id">
+                    <select id="edit-family-member" required></select>
+                    <input type="text" id="edit-expense-name" placeholder="Expense Name" required>
+                    <input type="number" id="edit-expense-amount" placeholder="Amount" step="0.01" required>
+                    <input type="date" id="edit-expense-date" required>
+                    <select id="edit-expense-category" required></select>
+                    <button type="submit">Update Expense</button>
+                </form>
+            </div>
+        </div>
+
+        <h3>Debug Log</h3>
+        <div id="debug-log"></div>
+    </div>
+
+    <script>
+   // Global variables
+let db;
+let categories = [];
+let familyMembers = [];
+let currentTheme = 'light';
+let sortDirection = {
+    familyMember: 'asc',
+    name: 'asc',
+    category: 'asc'
+};
+
+// Utility functions
+function log(message) {
+    console.log(message);
+    const debugLog = document.getElementById('debug-log');
+    const logEntry = document.createElement('div');
+    logEntry.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+    debugLog.appendChild(logEntry);
+    debugLog.scrollTop = debugLog.scrollHeight;
+}
+
+function formatDate(date) {
+    return new Date(date).toISOString().split('T')[0];
+}
+
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(amount);
+}
+
+// Database operations
+async function openDatabase() {
+    return new Promise((resolve, reject) => {
+        log('Opening database...');
+        const request = indexedDB.open('SpendyBuddyDB', 1);
+        request.onerror = (event) => {
+            log('Database error: ' + event.target.error);
+            reject('Database error: ' + event.target.error);
+        };
+        request.onsuccess = (event) => {
+            db = event.target.result;
+            log('Database opened successfully');
+            resolve(db);
+        };
+        request.onupgradeneeded = (event) => {
+            db = event.target.result;
+            log('Database upgrade needed. Creating object stores...');
+            if (!db.objectStoreNames.contains('expenses')) {
+                const store = db.createObjectStore('expenses', { keyPath: 'id', autoIncrement: true });
+                store.createIndex('dateIndex', 'date');
+                log('Created expenses object store');
+            }
+            if (!db.objectStoreNames.contains('categories')) {
+                db.createObjectStore('categories', { keyPath: 'name' });
+                log('Created categories object store');
+            }
+            if (!db.objectStoreNames.contains('familyMembers')) {
+                db.createObjectStore('familyMembers', { keyPath: 'name' });
+                log('Created familyMembers object store');
+            }
+        };
+    });
+}
+
+async function loadCategories() {
+    log('Loading categories...');
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['categories'], 'readonly');
+        const store = transaction.objectStore('categories');
+        const request = store.getAll();
+        request.onerror = (event) => {
+            log('Error fetching categories: ' + event.target.error);
+            reject('Error fetching categories: ' + event.target.error);
+        };
+        request.onsuccess = (event) => {
+            categories = event.target.result.map(cat => cat.name);
+            log(`Loaded ${categories.length} categories`);
+            resolve(categories);
+        };
+    });
+}
+
+async function loadFamilyMembers() {
+    log('Loading family members...');
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['familyMembers'], 'readonly');
+        const store = transaction.objectStore('familyMembers');
+        const request = store.getAll();
+        request.onerror = (event) => {
+            log('Error fetching family members: ' + event.target.error);
+            reject('Error fetching family members: ' + event.target.error);
+        };
+        request.onsuccess = (event) => {
+            familyMembers = event.target.result.map(member => member.name);
+            log(`Loaded ${familyMembers.length} family members`);
+            resolve(familyMembers);
+        };
+    });
+}
+
+async function addCategory(category) {
+    log(`Adding category: ${category}`);
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['categories'], 'readwrite');
+        const store = transaction.objectStore('categories');
+        const request = store.add({ name: category });
+        request.onerror = (event) => {
+            log('Error adding category: ' + event.target.error);
+            reject('Error adding category: ' + event.target.error);
+        };
+        request.onsuccess = () => {
+            categories.push(category);
+            log(`Category ${category} added successfully`);
+            resolve();
+        };
+    });
+}
+
+async function addFamilyMember(member) {
+    log(`Adding family member: ${member}`);
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['familyMembers'], 'readwrite');
+        const store = transaction.objectStore('familyMembers');
+        const request = store.add({ name: member });
+        request.onerror = (event) => {
+            log('Error adding family member: ' + event.target.error);
+            reject('Error adding family member: ' + event.target.error);
+        };
+        request.onsuccess = () => {
+            familyMembers.push(member);
+            log(`Family member ${member} added successfully`);
+            resolve();
+        };
+    });
+}
+
+async function removeCategory(category) {
+    log(`Removing category: ${category}`);
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['categories'], 'readwrite');
+        const store = transaction.objectStore('categories');
+        const request = store.delete(category);
+        request.onerror = (event) => {
+            log('Error removing category: ' + event.target.error);
+            reject('Error removing category: ' + event.target.error);
+        };
+        request.onsuccess = () => {
+            categories = categories.filter(c => c !== category);
+            log(`Category ${category} removed successfully`);
+            resolve();
+        };
+    });
+}
+
+async function removeFamilyMember(member) {
+    log(`Removing family member: ${member}`);
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['familyMembers'], 'readwrite');
+        const store = transaction.objectStore('familyMembers');
+        const request = store.delete(member);
+        request.onerror = (event) => {
+            log('Error removing family member: ' + event.target.error);
+            reject('Error removing family member: ' + event.target.error);
+        };
+        request.onsuccess = () => {
+            familyMembers = familyMembers.filter(m => m !== member);
+            log(`Family member ${member} removed successfully`);
+            resolve();
+        };
+    });
+}
+
+function validateExpense(expense) {
+    return {
+        familyMember: expense.familyMember || 'Unknown',
+        name: expense.name || 'Unnamed Expense',
+        amount: typeof expense.amount === 'number' ? expense.amount : 0,
+        date: expense.date || formatDate(new Date()),
+        category: expense.category || 'Uncategorized',
+        unnecessary: !!expense.unnecessary
+    };
+}
+
+async function addExpense(expense) {
+    const validatedExpense = validateExpense(expense);
+    delete validatedExpense.id; // Ensure id is not set
+    log(`Adding expense: ${JSON.stringify(validatedExpense)}`);
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['expenses'], 'readwrite');
+        const store = transaction.objectStore('expenses');
+        const request = store.add(validatedExpense);
+        request.onerror = () => {
+            log('Error adding expense: ' + request.error);
+            reject(request.error);
+        };
+        request.onsuccess = () => {
+            log('Expense added successfully');
+            resolve(request.result);
+        };
+    });
+}
+
+async function updateExpense(expense) {
+    const validatedExpense = validateExpense(expense);
+    validatedExpense.id = expense.id;
+    log(`Updating expense: ${JSON.stringify(validatedExpense)}`);
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['expenses'], 'readwrite');
+        const store = transaction.objectStore('expenses');
+        const request = store.put(validatedExpense);
+        request.onerror = () => {
+            log('Error updating expense: ' + request.error);
+            reject(request.error);
+        };
+        request.onsuccess = () => {
+            log('Expense updated successfully');
+            resolve(request.result);
+        };
+    });
+}
+
+async function deleteExpense(id) {
+    log(`Deleting expense with id: ${id}`);
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['expenses'], 'readwrite');
+        const store = transaction.objectStore('expenses');
+        const request = store.delete(id);
+        request.onerror = () => {
+            log('Error deleting expense: ' + request.error);
+            reject(request.error);
+        };
+        request.onsuccess = () => {
+            log('Expense deleted successfully');
+            resolve();
+        };
+    });
+}
+
+async function getAllExpenses() {
+    log('Fetching all expenses');
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['expenses'], 'readonly');
+        const store = transaction.objectStore('expenses');
+        const request = store.getAll();
+        request.onerror = () => {
+            log('Error fetching expenses: ' + request.error);
+            reject(request.error);
+        };
+        request.onsuccess = () => {
+            log(`Retrieved ${request.result.length} expenses`);
+            resolve(request.result);
+        };
+    });
+}
+
+// Sorting functions
+function sortTable(column) {
+    log(`Sorting table by ${column} in ${sortDirection[column]} order`);
+    getAllExpenses().then(expenses => {
+        expenses.sort((a, b) => {
+            if (a[column] < b[column]) return sortDirection[column] === 'asc' ? -1 : 1;
+            if (a[column] > b[column]) return sortDirection[column] === 'asc' ? 1 : -1;
+            return 0;
+        });
+
+        // Toggle sort direction
+        sortDirection[column] = sortDirection[column] === 'asc' ? 'desc' : 'asc';
+
+        // Update the table with sorted expenses
+        const tbody = document.querySelector('#expense-table tbody');
+        tbody.innerHTML = expenses.map(e => `
+            <tr class="${e.unnecessary ? 'unnecessary-spend' : ''}">
+                <td data-label="Family Member">${e.familyMember}</td>
+                <td data-label="Expense">${e.name}</td>
+                <td data-label="Amount">${formatCurrency(e.amount)}</td>
+                <td data-label="Date">${formatDate(e.date)}</td>
+                <td data-label="Category">${e.category}</td>
+                <td data-label="Actions">
+                    <button onclick="editExpenseHandler(${e.id})">Edit</button>
+                    <button onclick="deleteExpenseHandler(${e.id})">Delete</button>
+                    <button onclick="toggleUnnecessaryHandler(${e.id})">${e.unnecessary ? 'Mark Necessary' : 'Mark Unnecessary'}</button>
+                </td>
+            </tr>
+        `).join('');
+        log('Table sorted and updated successfully');
+    }).catch(error => {
+        log('Error sorting table: ' + error);
+    });
+}
+
+// UI update functions
+function updateDropdowns() {
+    const categorySelects = document.querySelectorAll('#expense-category, #edit-expense-category');
+    const familyMemberSelects = document.querySelectorAll('#family-member, #edit-family-member');
+
+    categorySelects.forEach(select => {
+        select.innerHTML = '<option value="">Select Category</option>' +
+            categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+    });
+
+    familyMemberSelects.forEach(select => {
+        select.innerHTML = '<option value="">Select Family Member</option>' +
+            familyMembers.map(member => `<option value="${member}">${member}</option>`).join('');
+    });
+
+    log('Dropdowns updated');
+}
+
+function displayCategories() {
+    const categoryList = document.getElementById('category-list');
+    categoryList.innerHTML = categories.map(cat => `
+        <span class="tag">${cat}<button onclick="removeCategoryHandler('${cat}')">&times;</button></span>
+    `).join('');
+    log('Categories displayed in settings');
+}
+
+function displayFamilyMembers() {
+    const memberList = document.getElementById('member-list');
+    memberList.innerHTML = familyMembers.map(member => `
+        <span class="tag">${member}<button onclick="removeFamilyMemberHandler('${member}')">&times;</button></span>
+    `).join('');
+    log('Family members displayed in settings');
+}
+
+async function displayExpenses() {
+    log('Displaying expenses');
+    try {
+        const expenses = await getAllExpenses();
+        const tbody = document.querySelector('#expense-table tbody');
+        tbody.innerHTML = expenses.map(e => `
+            <tr class="${e.unnecessary ? 'unnecessary-spend' : ''}">
+                <td data-label="Family Member">${e.familyMember}</td>
+                <td data-label="Expense">${e.name}</td>
+                <td data-label="Amount">${formatCurrency(e.amount)}</td>
+                <td data-label="Date">${formatDate(e.date)}</td>
+                <td data-label="Category">${e.category}</td>
+                <td data-label="Actions">
+                    <button onclick="editExpenseHandler(${e.id})">Edit</button>
+                    <button onclick="deleteExpenseHandler(${e.id})">Delete</button>
+                    <button onclick="toggleUnnecessaryHandler(${e.id})">${e.unnecessary ? 'Mark Necessary' : 'Mark Unnecessary'}</button>
+                </td>
+            </tr>
+        `).join('');
+        log('Expenses displayed successfully');
+        displayTodayExpenses(expenses);
+    } catch (error) {
+        log('Error in displayExpenses: ' + error);
+    }
+}
+
+function displayTodayExpenses(expenses) {
+    const today = formatDate(new Date());
+    const todayExpenses = expenses.filter(e => formatDate(e.date) === today);
+
+    const tbody = document.querySelector('#today-expense-table tbody');
+    tbody.innerHTML = todayExpenses.map(e => `
+        <tr class="${e.unnecessary ? 'unnecessary-spend' : ''}">
+            <td data-label="Family Member">${e.familyMember}</td>
+            <td data-label="Expense">${e.name}</td>
+            <td data-label="Amount">${formatCurrency(e.amount)}</td>
+            <td data-label="Category">${e.category}</td>
+            <td data-label="Actions">
+                <button onclick="toggleUnnecessaryHandler(${e.id})">${e.unnecessary ? 'Mark Necessary' : 'Mark Unnecessary'}</button>
+            </td>
+        </tr>
+    `).join('');
+
+    const todayTotal = todayExpenses.reduce((sum, e) => sum + e.amount, 0);
+    document.getElementById('today-total').textContent = formatCurrency(todayTotal);
+
+    log(`Displayed ${todayExpenses.length} expenses for today. Total: ${formatCurrency(todayTotal)}`);
+}
+
+async function generateReport() {
+    log('Generate report button clicked');
+    const reportType = document.querySelector('input[name="report-type"]:checked').value;
+    let startDate, endDate;
+
+    if (reportType === 'daily') {
+        const today = new Date();
+        startDate = today.toISOString().split('T')[0];
+        endDate = startDate;
+    } else if (reportType === 'weekly') {
+        const today = new Date();
+        const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
+        const lastDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 6));
+        startDate = firstDayOfWeek.toISOString().split('T')[0];
+        endDate = lastDayOfWeek.toISOString().split('T')[0];
+    } else if (reportType === 'monthly') {
+        const month = document.getElementById('report-month').value;
+        if (!month) {
+            alert('Please select a month');
+            return;
+        }
+        const [year, monthNum] = month.split('-');
+        startDate = new Date(year, monthNum - 1, 1).toISOString();
+        endDate = new Date(year, monthNum, 0).toISOString();
+    } else {
+        const reportStartDate = document.getElementById('report-start-date').value;
+        const reportEndDate = document.getElementById('report-end-date').value;
+        if (!reportStartDate || !reportEndDate) {
+            alert('Please select a start and end date');
+            return;
+        }
+        startDate = new Date(reportStartDate).toISOString();
+        endDate = new Date(reportEndDate).toISOString();
+    }
+
+    try {
+        const expenses = await getAllExpenses();
+        const filteredExpenses = expenses.filter(e => new Date(e.date) >= new Date(startDate) && new Date(e.date) <= new Date(endDate));
+
+        log(`Retrieved ${filteredExpenses.length} expenses for the report`);
+        const categoryTotals = {};
+        const itemTotals = {};
+        let totalExpense = 0;
+
+        filteredExpenses.forEach(e => {
+            categoryTotals[e.category] = (categoryTotals[e.category] || 0) + e.amount;
+            itemTotals[e.name] = (itemTotals[e.name] || 0) + e.amount;
+            totalExpense += e.amount;
+        });
+
+        const reportData = {
+            reportType: reportType,
+            startDate: startDate,
+            endDate: endDate,
+            totalExpense: totalExpense,
+            categoryTotals: categoryTotals,
+            itemTotals: itemTotals
+        };
+
+        displayReport(reportData);
+    } catch (error) {
+        log('Error generating report: ' + error);
+    }
+}
+
+function displayReport(reportData) {
+    const reportHtml = `
+        <h3>SpendyBuddy Report (${reportData.reportType})</h3>
+        <h4>Total Expense: ${formatCurrency(reportData.totalExpense)}</h4>
+        <h4>Category-wise Breakdown:</h4>
+        <ul>${Object.entries(reportData.categoryTotals).map(([category, amount]) =>
+            `<li>${category}: ${formatCurrency(amount)}</li>`).join('')}
+        </ul>
+        <h4>Item-wise Breakdown:</h4>
+        <ul>${Object.entries(reportData.itemTotals).map(([item, amount]) =>
+            `<li>${item}: ${formatCurrency(amount)}</li>`).join('')}
+        </ul>
+    `;
+
+    const reportText = `SpendyBuddy Report (${reportData.reportType})
+Total Expense: ${formatCurrency(reportData.totalExpense)}
+
+Category-wise Breakdown:
+${Object.entries(reportData.categoryTotals).map(([category, amount]) => `${category}: ${formatCurrency(amount)}`).join('\n')}
+
+Item-wise Breakdown:
+${Object.entries(reportData.itemTotals).map(([item, amount]) => `${item}: ${formatCurrency(amount)}`).join('\n')}`;
+
+    document.getElementById('report-result').innerHTML = reportHtml;
+    document.getElementById('copyReportBtn').style.display = 'block';
+    document.getElementById('copyReportBtn').onclick = () => copyReportToClipboard(reportText);
+
+    log('Report generated and displayed successfully');
+}
+
+function copyReportToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Report copied to clipboard!');
+        log('Report copied to clipboard');
+    }, (err) => {
+        console.error('Could not copy text: ', err);
+        log('Error copying report to clipboard: ' + err);
+    });
+}
+
+// Theme management
+function applyTheme(theme) {
+    document.body.className = theme + '-theme';
+    currentTheme = theme;
+    localStorage.setItem('theme', theme);
+    log(`Theme changed to ${theme}`);
+}
+
+function loadSavedTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    applyTheme(savedTheme);
+    document.getElementById('theme-select').value = savedTheme;
+    log(`Loaded saved theme: ${savedTheme}`);
+}
+
+// Event Handlers
+async function addExpenseHandler(event) {
+    event.preventDefault();
+    log('Expense form submitted');
+    const expense = {
+        familyMember: document.getElementById('family-member').value,
+        name: document.getElementById('expense-name').value,
+        amount: parseFloat(document.getElementById('expense-amount').value),
+        date: document.getElementById('expense-date').value,
+        category: document.getElementById('expense-category').value,
+        unnecessary: false // You can add a checkbox in the form for this if needed
+    };
+    try {
+        await addExpense(expense);
+        await displayExpenses();
+        event.target.reset();
+    } catch (error) {
+        log('Error submitting expense: ' + error);
+        alert('Error submitting expense. Please try again.');
+    }
+}
+
+async function editExpenseHandler(id) {
+    log(`Edit expense clicked for id: ${id}`);
+    try {
+        const transaction = db.transaction(['expenses'], 'readonly');
+        const store = transaction.objectStore('expenses');
+        const expense = await new Promise((resolve, reject) => {
+            const request = store.get(id);
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => resolve(request.result);
+        });
+
+        document.getElementById('edit-expense-id').value = expense.id;
+        document.getElementById('edit-family-member').value = expense.familyMember;
+        document.getElementById('edit-expense-name').value = expense.name;
+        document.getElementById('edit-expense-amount').value = expense.amount;
+        document.getElementById('edit-expense-date').value = formatDate(expense.date);
+        document.getElementById('edit-expense-category').value = expense.category;
+
+        document.getElementById('edit-modal').style.display = 'block';
+    } catch (error) {
+        log('Error fetching expense for edit: ' + error);
+        alert('Error fetching expense details. Please try again.');
+    }
+}
+
+async function updateExpenseHandler(event) {
+    event.preventDefault();
+    log('Edit expense form submitted');
+    const updatedExpense = {
+        id: parseInt(document.getElementById('edit-expense-id').value),
+        familyMember: document.getElementById('edit-family-member').value,
+        name: document.getElementById('edit-expense-name').value,
+        amount: parseFloat(document.getElementById('edit-expense-amount').value),
+        date: document.getElementById('edit-expense-date').value,
+        category: document.getElementById('edit-expense-category').value
+    };
+    try {
+        await updateExpense(updatedExpense);
+        document.getElementById('edit-modal').style.display = 'none';
+        await displayExpenses();
+    } catch (error) {
+        log('Error updating expense: ' + error);
+        alert('Error updating expense. Please try again.');
+    }
+}
+
+async function deleteExpenseHandler(id) {
+    log(`Delete expense clicked for id: ${id}`);
+    if (confirm('Are you sure you want to delete this expense?')) {
+        try {
+            await deleteExpense(id);
+            await displayExpenses();
+        } catch (error) {
+            log('Error deleting expense: ' + error);
+            alert('Error deleting expense. Please try again.');
+        }
+    }
+}
+
+async function toggleUnnecessaryHandler(id) {
+    log(`Toggle unnecessary clicked for id: ${id}`);
+    try {
+        const transaction = db.transaction(['expenses'], 'readwrite');
+        const store = transaction.objectStore('expenses');
+        const expense = await new Promise((resolve, reject) => {
+            const request = store.get(id);
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => resolve(request.result);
+        });
+
+        expense.unnecessary = !expense.unnecessary;
+        await new Promise((resolve, reject) => {
+            const updateRequest = store.put(expense);
+            updateRequest.onerror = () => reject(updateRequest.error);
+            updateRequest.onsuccess = () => resolve();
+        });
+
+        log(`Expense ${id} marked as ${expense.unnecessary ? 'unnecessary' : 'necessary'}`);
+        await displayExpenses();
+    } catch (error) {
+        log('Error toggling unnecessary status: ' + error);
+        alert('Error updating expense. Please try again.');
+    }
+}
+
+async function addCategoryHandler() {
+    const newCategory = document.getElementById('new-category').value.trim();
+    if (newCategory) {
+        try {
+            await addCategory(newCategory);
+            document.getElementById('new-category').value = '';
+            updateDropdowns();
+            displayCategories();
+        } catch (error) {
+            log('Error adding category: ' + error);
+            alert('Error adding category. Please try again.');
+        }
+    } else {
+        log('Attempted to add empty category');
+        alert('Please enter a category name.');
+    }
+}
+
+async function removeCategoryHandler(category) {
+    if (confirm(`Are you sure you want to remove the category "${category}"?`)) {
+        try {
+            await removeCategory(category);
+            updateDropdowns();
+            displayCategories();
+        } catch (error) {
+            log('Error removing category: ' + error);
+            alert('Error removing category. Please try again.');
+        }
+    }
+}
+
+async function addFamilyMemberHandler() {
+    const newMember = document.getElementById('new-member').value.trim();
+    if (newMember) {
+        try {
+            await addFamilyMember(newMember);
+            document.getElementById('new-member').value = '';
+            updateDropdowns();
+            displayFamilyMembers();
+        } catch (error) {
+            log('Error adding family member: ' + error);
+            alert('Error adding family member. Please try again.');
+        }
+    } else {
+        log('Attempted to add empty family member');
+        alert('Please enter a family member name.');
+    }
+}
+
+async function removeFamilyMemberHandler(member) {
+    if (confirm(`Are you sure you want to remove the family member "${member}"?`)) {
+        try {
+            await removeFamilyMember(member);
+            updateDropdowns();
+            displayFamilyMembers();
+        } catch (error) {
+            log('Error removing family member: ' + error);
+            alert('Error removing family member. Please try again.');
+        }
+    }
+}
+
+// Initialization
+async function initializeApp() {
+    log('Initializing app...');
+    try {
+        await openDatabase();
+        await loadCategories();
+        await loadFamilyMembers();
+        updateDropdowns();
+        displayCategories();
+        displayFamilyMembers();
+        await displayExpenses();
+        loadSavedTheme();
+        log('App initialized successfully');
+    } catch (error) {
+        log('Error initializing app: ' + error);
+        alert('Error initializing app. Please refresh the page and try again.');
+    }
+}
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    log('DOM loaded, starting app initialization...');
+    initializeApp();
+
+    document.getElementById('expense-form').onsubmit = addExpenseHandler;
+    document.getElementById('edit-expense-form').onsubmit = updateExpenseHandler;
+    document.getElementById('generate-report').onclick = generateReport;
+    document.getElementById('theme-select').onchange = (e) => applyTheme(e.target.value);
+    document.getElementById('open-settings').onclick = () => {
+        document.getElementById('settings-modal').style.display = 'block';
+    };
+    document.querySelectorAll('.close').forEach(closeBtn => {
+        closeBtn.onclick = function() {
+            this.closest('.modal').style.display = 'none';
+        };
+    });
+    document.getElementById('add-category').onclick = addCategoryHandler;
+    document.getElementById('add-member').onclick = addFamilyMemberHandler;
+
+    // Close modals when clicking outside of them
+    window.onclick = (event) => {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    };
+});
+
+// Expose necessary functions to global scope for HTML onclick attributes
+window.editExpenseHandler = editExpenseHandler;
+window.deleteExpenseHandler = deleteExpenseHandler;
+window.toggleUnnecessaryHandler = toggleUnnecessaryHandler;
+window.removeCategoryHandler = removeCategoryHandler;
+window.removeFamilyMemberHandler = removeFamilyMemberHandler;
+window.sortTable = sortTable;
+
+  </script>
+</body>
+</html>
